@@ -29,7 +29,8 @@ class LoginPage extends StatelessWidget {
           isLoading = false;
           Navigator.pushNamed(context, ChatPage.id);
         } else if (state is LoginFailure) {
-          showSnackBar(context, 'Something went wrong!');
+          isLoading = false;
+          showSnackBar(context, state.errMessage);
         }
       },
       child: ModalProgressHUD(
@@ -101,22 +102,8 @@ class LoginPage extends StatelessWidget {
                   CustomButton(
                     onTap: () async {
                       if (formKey.currentState!.validate()) {
-                        isLoading = true;
-
-                        try {
-                          await loginUser();
-                          Navigator.pushNamed(context, ChatPage.id,
-                              arguments: email);
-                        } on FirebaseAuthException catch (e) {
-                          if (e.code == 'user-not-found') {
-                            showSnackBar(context, 'user not found');
-                          } else if (e.code == 'wrong-password') {
-                            showSnackBar(context, 'wrong password');
-                          }
-                        } catch (e) {
-                          showSnackBar(context, 'ther was an error');
-                        }
-                        isLoading = false;
+                        BlocProvider.of<LoginCubit>(context)
+                            .loginUser(email: email!, password: password!);
                       } else {}
                     },
                     title: 'LOGIN',
