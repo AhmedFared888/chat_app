@@ -21,19 +21,18 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<LoginCubit, LoginState>(
-      listener: (context, state) {
-        if (state is LoginLoading) {
-          isLoading = true;
-        } else if (state is LoginSuccess) {
-          isLoading = false;
-          Navigator.pushNamed(context, ChatPage.id);
-        } else if (state is LoginFailure) {
-          isLoading = false;
-          showSnackBar(context, state.errMessage);
-        }
-      },
-      child: ModalProgressHUD(
+    return BlocConsumer<LoginCubit, LoginState>(listener: (context, state) {
+      if (state is LoginLoading) {
+        isLoading = true;
+      } else if (state is LoginSuccess) {
+        isLoading = false;
+        Navigator.pushNamed(context, ChatPage.id);
+      } else if (state is LoginFailure) {
+        isLoading = false;
+        showSnackBar(context, state.errMessage);
+      }
+    }, builder: (context, state) {
+      return ModalProgressHUD(
         inAsyncCall: isLoading,
         progressIndicator: CircularProgressIndicator(
           color: Colors.white,
@@ -138,7 +137,7 @@ class LoginPage extends StatelessWidget {
             ),
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 }
