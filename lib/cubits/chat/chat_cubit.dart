@@ -8,6 +8,7 @@ part 'chat_state.dart';
 
 class ChatCubit extends Cubit<ChatState> {
   ChatCubit() : super(ChatInitial());
+  List<Message> messagesList = [];
   CollectionReference messages =
       FirebaseFirestore.instance.collection(kMessagesCollections);
   void sendMessage({required String message, required String email}) {
@@ -28,7 +29,7 @@ class ChatCubit extends Cubit<ChatState> {
         )
         .snapshots()
         .listen((event) {
-      List<Message> messagesList = [];
+      messagesList = [];
       for (var doc in event.docs) {
         messagesList.add(Message.fromJson(doc));
       }

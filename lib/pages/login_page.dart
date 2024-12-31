@@ -1,11 +1,10 @@
 import 'package:chat_app/constants.dart';
-import 'package:chat_app/cubits/login_cubit/login_cubit.dart';
+import 'package:chat_app/cubits/auth/auth_cubit.dart';
 import 'package:chat_app/helper/show_snack_bar.dart';
 import 'package:chat_app/pages/chat_page.dart';
 import 'package:chat_app/pages/register_page.dart';
 import 'package:chat_app/widgets/custom_button.dart';
 import 'package:chat_app/widgets/custom_text_field.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
@@ -21,7 +20,7 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<LoginCubit, LoginState>(listener: (context, state) {
+    return BlocConsumer<AuthCubit, AuthState>(listener: (context, state) {
       if (state is LoginLoading) {
         isLoading = true;
       } else if (state is LoginSuccess) {
@@ -34,7 +33,7 @@ class LoginPage extends StatelessWidget {
     }, builder: (context, state) {
       return ModalProgressHUD(
         inAsyncCall: isLoading,
-        progressIndicator: CircularProgressIndicator(
+        progressIndicator: const CircularProgressIndicator(
           color: Colors.white,
         ),
         child: Scaffold(
@@ -45,7 +44,7 @@ class LoginPage extends StatelessWidget {
               key: formKey,
               child: ListView(
                 children: [
-                  SizedBox(
+                  const SizedBox(
                     height: 40.0,
                   ),
                   Image.asset(
@@ -101,7 +100,7 @@ class LoginPage extends StatelessWidget {
                   CustomButton(
                     onTap: () async {
                       if (formKey.currentState!.validate()) {
-                        BlocProvider.of<LoginCubit>(context)
+                        BlocProvider.of<AuthCubit>(context)
                             .loginUser(email: email!, password: password!);
                       } else {}
                     },

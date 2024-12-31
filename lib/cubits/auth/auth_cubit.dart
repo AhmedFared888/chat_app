@@ -1,15 +1,28 @@
-import 'dart:math';
-
 import 'package:bloc/bloc.dart';
-import 'package:chat_app/cubits/login_cubit/login_cubit.dart';
-import 'package:chat_app/helper/show_snack_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
+import 'package:meta/meta.dart';
 
-part 'register_state.dart';
+part 'auth_state.dart';
 
-class RegisterCubit extends Cubit<RegisterState> {
-  RegisterCubit() : super(RegisterInitial());
+class AuthCubit extends Cubit<AuthState> {
+  AuthCubit() : super(AuthCubitInitial());
+
+  Future<void> loginUser({required email, required password}) async {
+    emit(LoginLoading());
+    try {
+      UserCredential user = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email, password: password);
+      emit(LoginSuccess());
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        emit(LoginFailure(errMessage: 'User not found'));
+      } else if (e.code == 'wrong-password') {
+        emit(LoginFailure(errMessage: 'Wrong password'));
+      }
+    } catch (e) {
+      emit(LoginFailure(errMessage: 'Something went wrong'));
+    }
+  }
 
   Future<void> registerUser(
       {required String email, required String password}) async {
