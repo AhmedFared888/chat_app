@@ -1,5 +1,5 @@
+import 'package:chat_app/blocs/auth_bloc/auth_bloc.dart';
 import 'package:chat_app/constants.dart';
-import 'package:chat_app/cubits/auth/auth_cubit.dart';
 import 'package:chat_app/helper/show_snack_bar.dart';
 import 'package:chat_app/pages/chat_page.dart';
 import 'package:chat_app/pages/register_page.dart';
@@ -20,7 +20,7 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<AuthCubit, AuthState>(listener: (context, state) {
+    return BlocConsumer<AuthBloc, AuthState>(listener: (context, state) {
       if (state is LoginLoading) {
         isLoading = true;
       } else if (state is LoginSuccess) {
@@ -100,8 +100,8 @@ class LoginPage extends StatelessWidget {
                   CustomButton(
                     onTap: () async {
                       if (formKey.currentState!.validate()) {
-                        BlocProvider.of<AuthCubit>(context)
-                            .loginUser(email: email!, password: password!);
+                        BlocProvider.of<AuthBloc>(context).add(
+                            LoginEvent(email: email!, password: password!));
                       } else {}
                     },
                     title: 'LOGIN',
